@@ -65,7 +65,7 @@ python generator.py \
 --num_files 3 \ # number of files to be generated, default is 1
 --distribution correlation-based \ # distribution method to sample from
 --pattern swapper \ # pattern generator, select from multiple patterns (or add your own)
---embeddings \ # create .npy files instead of 'latent audio' files.
+--embeddings \ # create .npy files in addition to 'latent audio' files.
 --output /path/to/generated/files # default is './_generator-output'
 ```
 
@@ -119,6 +119,7 @@ The script comes with the following POC patterns:
 | orale | Approximation to a standard sequence in electronic music building an array using a 3:1 scheme where the original array is repeated three times and a fourth time with subtle changes applied to its values. This sequence is then repeated and altered again in the same scheme of 3:1.  | [1](https://github.com/user-attachments/files/26414524/orale_bll.mp3) [2](https://github.com/user-attachments/files/26414523/orale_nsp.mp3) |
 | blender | Blends two arrays into one another by replacing single data points sequentially after `--num_loops` repetitions, starting with the first value in the first dimension, followed by the first value in the second dimension and so on until the last value in the last dimensions has been reached. The pattern can be inverted, mirrored or mirror-inverted (implemented, not active). | [1](https://github.com/user-attachments/files/26414579/blender_nsp.mp3) [2](https://github.com/user-attachments/files/26414588/blender_bll.mp3) |
 | swapper | Swaps values of randomly picked data points in two arrays of the same size and repeats the altered array `--num_loops` times. | [1](https://github.com/user-attachments/files/26414697/swapper_bll.mp3) [2](https://github.com/user-attachments/files/26414695/swapper_nsp.mp3) |
+| default (fallback) | Repeats a generated array `--num_loops` times. | n/a |
 
     
 ## Decoding to audio 
