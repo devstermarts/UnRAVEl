@@ -18,6 +18,7 @@ from utils.gen_functions import (  # Various pattern generators
     d_gen_normal,
     d_gen_uniform,
     p_gen_blender,
+    p_gen_default,
     p_gen_fibo,
     p_gen_orale,
     p_gen_swapper,
@@ -58,7 +59,7 @@ def arg_parser():
     parser.add_argument(
         "--num_loops",
         type=int,
-        default=4,
+        default=1,
         help="Number of loops/ repetitions to apply on latents.",
     )
     parser.add_argument(
@@ -83,8 +84,8 @@ def arg_parser():
     parser.add_argument(
         "--pattern",
         type=str,
-        default=None,
-        choices=["fibo", "orale", "blender", "swapper", None],
+        default="default",
+        choices=["fibo", "orale", "blender", "swapper", "default"],
         help="Basic compositional patterns.",
     )
     parser.add_argument(
@@ -144,6 +145,7 @@ def generate(eval, args):
         "swapper": lambda data_array1, data_array2: p_gen_swapper(
             data_array1, data_array2, args.num_loops
         ),
+        "default": lambda data_array: p_gen_default(data_array, args.num_loops),
     }
 
     rng = np.random.default_rng(args.seed)
@@ -162,13 +164,17 @@ def generate(eval, args):
                 args, mean, std, lower_bound, upper_bound, covar, lat_dims, rng
             )
             data_array = pattern_functions[args.pattern](data_array)
-        else:
+        elif args.pattern == "default":
+            print(
+                f"No specific pattern selected, generating random array of length {args.num_latents} and repeat {args.num_loops} times."
+            )
             data_array = generate_data_array(
                 args, mean, std, lower_bound, upper_bound, covar, lat_dims, rng
             )
-            print(
-                f"No specific pattern selected, generating random pattern of length {args.num_latents}."
-            )
+            data_array = pattern_functions[args.pattern](data_array)
+        else:
+            print("Not a pattern. Exiting.")
+            exit()
 
         file_name = f"file_{file}_plot--seed_{args.seed}--IQR-{args.iqr}--DIST-{args.distribution}--LATENTS-{args.num_latents}.png"
         file_path = os.path.join(args.output, timestamp, file_name)
@@ -195,23 +201,24 @@ def generate(eval, args):
         print(f"Saved value distribution plot to '{file_path}'")
 
         # File output ->
+        new_file = f"file_{file}_signal--seed_{args.seed}--IQR-{args.iqr}--DIST-{args.distribution}--PATTERN-{args.pattern}--LATENTS-{args.num_latents}.wav"
+        new_file_path = os.path.join(args.output, timestamp, new_file)
+        latent_sample_rate = args.sample_rate // 2048
+        sf.write(
+            new_file_path,
+            data_array,
+            latent_sample_rate,
+            subtype="FLOAT",  # Generate a .wav file with 32-bit floating-point samples
+        )
+        print(f"Saved file to '{new_file_path}'")
         if args.embeddings:
             data_array = np.expand_dims(data_array.T, axis=0)
-            new_file = f"file_{file}_embeddings--seed_{args.seed}--IQR-{args.iqr}--DIST-{args.distribution}--PATTERN-{args.pattern}--LATENTS-{args.num_latents}.npy"
-            new_file_path = os.path.join(args.output, timestamp, new_file)
-            np.save(new_file_path, data_array)
-
-        else:
-            new_file = f"file_{file}_signal--seed_{args.seed}--IQR-{args.iqr}--DIST-{args.distribution}--PATTERN-{args.pattern}--LATENTS-{args.num_latents}.wav"
-            new_file_path = os.path.join(args.output, timestamp, new_file)
-            latent_sample_rate = args.sample_rate // 2048
-            sf.write(
-                new_file_path,
-                data_array,
-                latent_sample_rate,
-                subtype="DOUBLE",  # Generate a .wav file with 64-bit floating-point samples
+            new_embeddings_file = f"file_{file}_embeddings--seed_{args.seed}--IQR-{args.iqr}--DIST-{args.distribution}--PATTERN-{args.pattern}--LATENTS-{args.num_latents}.npy"
+            new_embeddings_file_path = os.path.join(
+                args.output, timestamp, new_embeddings_file
             )
-        print(f"Saved file to '{new_file_path}'")
+            np.save(new_embeddings_file_path, data_array)
+            print(f"Saved embeddings to '{new_embeddings_file_path}'")
 
 
 if __name__ == "__main__":
