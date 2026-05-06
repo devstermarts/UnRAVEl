@@ -10,6 +10,8 @@ The process consists of three phases:
 * __generation of synthetic data:__ 1-n encodings are evaluated for their data distribution. Based on the results, arrays of synthetic data are generated which are used to populate preset patterns and apply alterations to these patterns.
 * __decoding of synthetic data into audio data:__ 1-n generated/ synthetic data arrays are being decoded and up sampled back to the audio domain using the same model as in the encoding process.
 
+More info on concept idea along with sound examples [here](https://martstil.de/code/unravel-speculative-composition-in-latent-space). 
+
 Author: Martin Heinze | [`marts~`](https://martstil.de). Year: 2026
 
 ---
