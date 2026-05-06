@@ -110,3 +110,10 @@ def p_gen_swapper(data_array1, data_array2, num_loops):
             swap = np.append(swap, data_array1.copy(), axis=0).astype(np.float32)
     print(f"Total pattern length: {swap.shape[0]}")
     return swap
+
+
+def p_gen_default(data_array, num_loops):
+    """Repeat array 'num_loops' times."""
+    data_array_rep = np.tile(data_array, (num_loops, 1))
+    print(f"Total pattern length: {data_array_rep.shape[0]}")
+    return data_array_rep
