@@ -91,7 +91,7 @@ def arg_parser():
     parser.add_argument(
         "--embeddings",
         action="store_true",
-        help="If set, the script will generate embeddings instead of 'latent audio' files.",
+        help="If set, the script will generate embeddings in addition to 'latent audio' files.",
     )
     parser.add_argument(
         "--output",

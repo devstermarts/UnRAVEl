@@ -27,6 +27,9 @@ def scan_dirs(input, extensions):
         print(f"\n{len(all_files)} files found in '{input}' and subdirectories.")
         return all_files
     else:
+        print(
+            f"\nNo files with extension(s) '{extensions}' found in '{input}' and subdirectories."
+        )
         return []
 
 
